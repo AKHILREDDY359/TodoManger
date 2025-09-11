@@ -16,10 +16,17 @@ const TaskDashboard = ({ searchQuery = "" }) => {
   const [editingTask, setEditingTask] = useState(null);
   const [now, setNow] = useState(new Date());
 
+  const isAuthed = !!session;
+
   // Load tasks from Supabase
   useEffect(() => {
     const fetchTasks = async () => {
-      if (!session) return;
+      if (!isAuthed) {
+        // Not logged in → nothing to load; stop showing the loading state
+        setTasks([]);
+        setLoading(false);
+        return;
+      }
 
       const { data, error } = await supabase
         .from("todos")
@@ -39,7 +46,7 @@ const TaskDashboard = ({ searchQuery = "" }) => {
     };
 
     fetchTasks();
-  }, [session]);
+  }, [session, isAuthed]);
 
   // Update clock every day at midnight
   useEffect(() => {
@@ -72,13 +79,15 @@ const TaskDashboard = ({ searchQuery = "" }) => {
     return haystack.includes(normalizedQuery);
   });
 
-  // Stats
-  const taskStats = {
-    total: tasks.length,
-    completed: tasks.filter((t) => t.status === "completed").length,
-    inProgress: tasks.filter((t) => t.status === "in-progress").length,
-    todo: tasks.filter((t) => t.status === "todo").length,
-  };
+  // Stats (show zeros if not authed)
+  const taskStats = isAuthed
+    ? {
+        total: tasks.length,
+        completed: tasks.filter((t) => t.status === "completed").length,
+        inProgress: tasks.filter((t) => t.status === "in-progress").length,
+        todo: tasks.filter((t) => t.status === "todo").length,
+      }
+    : { total: 0, completed: 0, inProgress: 0, todo: 0 };
 
   // CRUD Handlers
   const handleCreateTask = async (taskData) => {
@@ -294,11 +303,12 @@ const TaskDashboard = ({ searchQuery = "" }) => {
         </div>
 
         <Button
-          onClick={() => setShowForm(true)}
-          className="bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600 text-white"
+          onClick={() => isAuthed && setShowForm(true)}
+          disabled={!isAuthed}
+          className="bg-orange-600 hover:bg-orange-700 disabled:opacity-60 dark:bg-orange-500 dark:hover:bg-orange-600 text-white"
         >
           <Plus className="h-4 w-4 mr-2" />
-          Add New Task
+          {isAuthed ? 'Add New Task' : 'Login to add tasks'}
         </Button>
       </div>
 
@@ -328,10 +338,10 @@ const TaskDashboard = ({ searchQuery = "" }) => {
         >
           <Calendar className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-            No tasks found
+            {isAuthed ? 'No tasks found' : 'Welcome to Todo Manager'}
           </h3>
           <p className="text-gray-500 dark:text-gray-400">
-            Create your first task to get started
+            {isAuthed ? 'Create your first task to get started' : 'Please login to view and manage your tasks'}
           </p>
         </motion.div>
       )}
