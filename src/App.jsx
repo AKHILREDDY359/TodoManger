@@ -1,3 +1,4 @@
+// src/App.jsx
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
@@ -9,6 +10,7 @@ import ThemeToggle from './components/ThemeToggle';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import Footer from './components/Footer';
+// Auth provider is applied in main.jsx
 
 const App = () => {
   const [darkMode, setDarkMode] = useState(() => {
@@ -34,7 +36,12 @@ const App = () => {
     <ThemeProvider>
       <Router>
         <div className="min-h-[100dvh] bg-[#ECEEDF] dark:bg-gray-900 transition-colors flex flex-col">
-          <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+          <Navbar
+            darkMode={darkMode}
+            toggleDarkMode={toggleDarkMode}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
           <ThemeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
           <main className="pt-16 flex-1 min-h-0">
             <Routes>

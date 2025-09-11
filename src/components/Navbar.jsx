@@ -1,11 +1,20 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { CheckSquare, Plus, Search, Moon, Sun } from 'lucide-react';
 import { motion } from 'framer-motion';
 import DarkModeToggle from './DarkModeToggle';
+import { useAuth } from '../context/AuthContext';
+import { supabase } from '../supabaseClient';
 
 const Navbar = ({ darkMode, toggleDarkMode, searchQuery, setSearchQuery }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { session } = useAuth();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/login');
+  };
 
   return (
     <motion.nav
@@ -66,18 +75,34 @@ const Navbar = ({ darkMode, toggleDarkMode, searchQuery, setSearchQuery }) => {
                 className="bg-transparent placeholder-white/70 text-sm outline-none w-32 lg:w-56 text-white"
               />
             </div>
-            <Link
-              to="/login"
-              className="hidden sm:inline-block px-4 py-2 rounded-lg text-sm font-medium text-white/90 hover:bg-white/10 transition-colors"
-            >
-              Login
-            </Link>
-            <Link
-              to="/signup"
-              className="bg-white/90 text-orange-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-white"
-            >
-              Sign Up
-            </Link>
+            {session ? (
+              <div className="hidden sm:flex items-center gap-2">
+                <span className="px-3 py-2 rounded-lg text-sm font-medium bg-white/15 text-white/90">
+                  {session.user?.email}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-white/90 hover:bg-white/10 transition-colors"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="hidden sm:inline-block px-4 py-2 rounded-lg text-sm font-medium text-white/90 hover:bg-white/10 transition-colors"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/signup"
+                  className="bg-white/90 text-orange-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-white"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

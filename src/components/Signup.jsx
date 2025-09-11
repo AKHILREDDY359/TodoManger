@@ -1,18 +1,43 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from '../supabaseClient';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      // Integrate with Supabase auth here later
-      await new Promise((r) => setTimeout(r, 500));
-      alert('Account created (placeholder)');
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (error) {
+        alert(error.message);
+      } else {
+        // If email confirmations are disabled, Supabase returns a session and we can redirect now.
+        if (data.session) {
+          alert('✅ Account created and signed in!');
+          navigate('/dashboard');
+        } else {
+          // If confirmations are enabled, attempt immediate login to support dev/demo flows
+          const { error: signInErr } = await supabase.auth.signInWithPassword({ email, password });
+          if (!signInErr) {
+            navigate('/dashboard');
+          } else {
+            alert('✅ Account created! Please check your email to confirm.');
+            navigate('/login');
+          }
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Unexpected error occurred');
     } finally {
       setLoading(false);
     }
@@ -65,5 +90,3 @@ const Signup = () => {
 };
 
 export default Signup;
-
-

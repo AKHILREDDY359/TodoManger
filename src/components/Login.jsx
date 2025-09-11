@@ -1,18 +1,31 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from '../supabaseClient';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      // Integrate with Supabase auth here later
-      await new Promise((r) => setTimeout(r, 500));
-      alert('Logged in (placeholder)');
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        alert(error.message);
+      } else {
+        alert('✅ Logged in successfully!');
+        navigate('/dashboard'); // redirect after login
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Unexpected error occurred');
     } finally {
       setLoading(false);
     }
@@ -65,5 +78,3 @@ const Login = () => {
 };
 
 export default Login;
-
-
