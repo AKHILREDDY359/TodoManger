@@ -1,41 +1,48 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { CheckSquare, Target, Users, Zap, Shield, Clock } from 'lucide-react';
-import reactLogo from '../assets/react.svg'; // updated import
+import reactLogo from '../assets/react.svg';
 
 const About = () => {
   const features = [
     {
-      icon: () => <img src={reactLogo} alt="React Logo" className="h-6 w-6" />, // updated icon
+      type: 'image',
+      icon: reactLogo,
       title: 'Built with React',
       description: 'A modern, fast, and reactive UI built with React and Vite for optimal performance.'
     },
     {
+      type: 'icon',
       icon: Target,
       title: 'Priority Management',
       description: 'Organize tasks by priority levels with visual indicators to focus on what matters most.'
     },
     {
+      type: 'icon',
       icon: Clock,
       title: 'Due Date Tracking',
       description: 'Never miss deadlines with smart due date reminders and overdue task highlighting.'
     },
     {
+      type: 'icon',
       icon: Zap,
       title: 'Real-time Updates',
       description: 'Instant task status updates and progress tracking for seamless workflow management.'
     },
     {
+      type: 'icon',
       icon: Shield,
       title: 'Data Security',
       description: 'Your tasks are stored securely with local storage and privacy-first approach.'
     },
     {
+      type: 'icon',
       icon: Users,
       title: 'User-Friendly',
       description: 'Intuitive interface designed for productivity with minimal learning curve.'
     },
     {
+      type: 'icon',
       icon: CheckSquare,
       title: 'Task Categories',
       description: 'Organize tasks into custom categories for better project management.'
@@ -69,7 +76,7 @@ const About = () => {
 
       {/* Stats Section */}
       <motion.div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
-        {stats.map((stat, index) => (
+        {stats.map((stat) => (
           <motion.div key={stat.label} className="text-center">
             <div className="text-3xl md:text-4xl font-bold text-orange-600 dark:text-orange-400 mb-2">
               {stat.value}
@@ -83,7 +90,7 @@ const About = () => {
 
       {/* Features Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-        {features.map((feature, index) => {
+        {features.map((feature) => {
           const IconComponent = feature.icon;
           return (
             <div
@@ -91,8 +98,8 @@ const About = () => {
               className="bg-orange-50 dark:bg-gray-800 p-6 rounded-xl border border-orange-100 dark:border-gray-700 hover:shadow-lg transition-shadow"
             >
               <div className="bg-orange-600 dark:bg-orange-500 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
-                {typeof IconComponent === 'function' ? (
-                  <IconComponent />
+                {feature.type === 'image' ? (
+                  <img src={IconComponent} alt={feature.title} className="h-6 w-6" />
                 ) : (
                   <IconComponent className="h-6 w-6 text-white" />
                 )}
