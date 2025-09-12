@@ -110,10 +110,13 @@ const TaskDashboard = ({ searchQuery = "" }) => {
       if (error) {
         console.error("Error adding task:", error);
         alert(`❌ Error creating task: ${error.message}`);
+        setShowForm(false);
+        setEditingTask(null); // Reset editing state on error too
       } else if (data && data.length > 0) {
         const newTask = { ...data[0], dueDate: data[0].due_date };
         setTasks(prevTasks => [...prevTasks, newTask]);
         setShowForm(false);
+        setEditingTask(null); // Reset editing state
         alert('✅ Task created successfully!');
       } else {
         alert('❌ No data returned from server');
@@ -121,6 +124,8 @@ const TaskDashboard = ({ searchQuery = "" }) => {
     } catch (err) {
       console.error("Unexpected error:", err);
       alert('❌ Unexpected error occurred while creating task');
+      setShowForm(false);
+      setEditingTask(null); // Reset editing state on unexpected error
     }
   };
 
