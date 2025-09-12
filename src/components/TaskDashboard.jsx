@@ -91,6 +91,8 @@ const TaskDashboard = ({ searchQuery = "" }) => {
 
   // CRUD Handlers
   const handleCreateTask = async (taskData) => {
+    console.log('Creating task:', taskData);
+    console.log('Current showForm:', showForm, 'editingTask:', editingTask);
     try {
       const { data, error } = await supabase
         .from("todos")
@@ -115,8 +117,9 @@ const TaskDashboard = ({ searchQuery = "" }) => {
       } else if (data && data.length > 0) {
         const newTask = { ...data[0], dueDate: data[0].due_date };
         setTasks(prevTasks => [...prevTasks, newTask]);
+        // Close form immediately
         setShowForm(false);
-        setEditingTask(null); // Reset editing state
+        setEditingTask(null);
         alert('✅ Task created successfully!');
       } else {
         alert('❌ No data returned from server');
@@ -471,7 +474,7 @@ const TaskDashboard = ({ searchQuery = "" }) => {
       {/* Task Form */}
       {(showForm || editingTask) && (
         <TaskForm
-          task={editingTask}
+          task={editingTask || null}
           onSubmit={editingTask ? handleUpdateTask : handleCreateTask}
           onCancel={() => {
             setShowForm(false);

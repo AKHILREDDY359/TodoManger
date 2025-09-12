@@ -21,6 +21,15 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
         dueDate: task.dueDate || '',
         category: task.category || ''
       });
+    } else {
+      // Reset form when no task (create mode)
+      setFormData({
+        title: '',
+        description: '',
+        priority: 'medium',
+        dueDate: '',
+        category: ''
+      });
     }
   }, [task]);
 
@@ -29,13 +38,7 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
     if (!formData.title.trim()) return;
 
     onSubmit(formData);
-    setFormData({
-      title: '',
-      description: '',
-      priority: 'medium',
-      dueDate: '',
-      category: ''
-    });
+    // Don't reset form data here - let the parent component handle state
   };
 
   const handleChange = (e) => {
