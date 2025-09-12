@@ -91,75 +91,116 @@ const TaskDashboard = ({ searchQuery = "" }) => {
 
   // CRUD Handlers
   const handleCreateTask = async (taskData) => {
-    const { data, error } = await supabase
-      .from("todos")
-      .insert([
-        {
-          title: taskData.title,
-          description: taskData.description,
-          priority: taskData.priority,
-          status: "todo",
-          due_date: taskData.dueDate,
-          category: taskData.category,
-          user_id: session.user.id,
-        },
-      ])
-      .select();
+    try {
+      const { data, error } = await supabase
+        .from("todos")
+        .insert([
+          {
+            title: taskData.title,
+            description: taskData.description,
+            priority: taskData.priority,
+            status: "todo",
+            due_date: taskData.dueDate,
+            category: taskData.category,
+            user_id: session.user.id,
+          },
+        ])
+        .select();
 
-    if (error) {
-      console.error("Error adding task:", error);
-    } else {
-      const newTask = { ...data[0], dueDate: data[0].due_date };
-      setTasks([...tasks, newTask]);
-      setShowForm(false);
+      if (error) {
+        console.error("Error adding task:", error);
+        alert(`❌ Error creating task: ${error.message}`);
+      } else if (data && data.length > 0) {
+        const newTask = { ...data[0], dueDate: data[0].due_date };
+        setTasks(prevTasks => [...prevTasks, newTask]);
+        setShowForm(false);
+        alert('✅ Task created successfully!');
+      } else {
+        alert('❌ No data returned from server');
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      alert('❌ Unexpected error occurred while creating task');
     }
   };
 
   const handleUpdateTask = async (taskData) => {
-    const { data, error } = await supabase
-      .from("todos")
-      .update({
-        title: taskData.title,
-        description: taskData.description,
-        priority: taskData.priority,
-        status: taskData.status,
-        due_date: taskData.dueDate,
-        category: taskData.category,
-      })
-      .eq("id", editingTask.id)
-      .select();
+    try {
+      const { data, error } = await supabase
+        .from("todos")
+        .update({
+          title: taskData.title,
+          description: taskData.description,
+          priority: taskData.priority,
+          status: taskData.status,
+          due_date: taskData.dueDate,
+          category: taskData.category,
+        })
+        .eq("id", editingTask.id)
+        .select();
 
-    if (error) {
-      console.error("Error updating task:", error);
-    } else {
-      const updatedTask = { ...data[0], dueDate: data[0].due_date };
-      setTasks(tasks.map((t) => (t.id === updatedTask.id ? updatedTask : t)));
-      setEditingTask(null);
+      if (error) {
+        console.error("Error updating task:", error);
+        alert(`❌ Error updating task: ${error.message}`);
+      } else if (data && data.length > 0) {
+        const updatedTask = { ...data[0], dueDate: data[0].due_date };
+        setTasks(prevTasks => prevTasks.map((t) => (t.id === updatedTask.id ? updatedTask : t)));
+        setEditingTask(null);
+        alert('✅ Task updated successfully!');
+      } else {
+        alert('❌ No data returned from server');
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      alert('❌ Unexpected error occurred while updating task');
     }
   };
 
   const handleDeleteTask = async (taskId) => {
-    const { error } = await supabase.from("todos").delete().eq("id", taskId);
+    try {
+      const { error } = await supabase.from("todos").delete().eq("id", taskId);
 
-    if (error) {
-      console.error("Error deleting task:", error);
-    } else {
-      setTasks(tasks.filter((t) => t.id !== taskId));
+      if (error) {
+        console.error("Error deleting task:", error);
+        alert(`❌ Error deleting task: ${error.message}`);
+      } else {
+        setTasks(prevTasks => prevTasks.filter((t) => t.id !== taskId));
+        alert('✅ Task deleted successfully!');
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      alert('❌ Unexpected error occurred while deleting task');
     }
   };
 
   const handleStatusChange = async (taskId, newStatus) => {
-    const { data, error } = await supabase
-      .from("todos")
-      .update({ status: newStatus })
-      .eq("id", taskId)
-      .select();
+    try {
+      const { data, error } = await supabase
+        .from("todos")
+        .update({ status: newStatus })
+        .eq("id", taskId)
+        .select();
 
-    if (error) {
-      console.error("Error updating status:", error);
-    } else {
-      const updatedTask = { ...data[0], dueDate: data[0].due_date };
-      setTasks(tasks.map((t) => (t.id === updatedTask.id ? updatedTask : t)));
+      if (error) {
+        console.error("Error updating status:", error);
+        alert(`❌ Error updating task status: ${error.message}`);
+      } else if (data && data.length > 0) {
+        const updatedTask = { ...data[0], dueDate: data[0].due_date };
+        setTasks(prevTasks => prevTasks.map((t) => (t.id === updatedTask.id ? updatedTask : t)));
+        
+        // Show success message for status changes
+        const statusMessages = {
+          'todo': '📝 Task moved to To Do',
+          'in-progress': '🔄 Task marked as In Progress',
+          'completed': '✅ Task completed!'
+        };
+        alert(statusMessages[newStatus] || '✅ Task status updated!');
+      } else {
+        alert('❌ No data returned from server');
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      alert('❌ Unexpected error occurred while updating task status');
     }
   };
 
