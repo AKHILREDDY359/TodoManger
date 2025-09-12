@@ -17,13 +17,13 @@ const Button = ({
 
   const variants = {
     primary:
-      'bg-orange-600 text-white hover:bg-orange-700 focus:ring-orange-500 dark:bg-orange-700 dark:hover:bg-orange-800 dark:focus:ring-orange-600',
+      'bg-eastern-blue text-white hover:bg-kimberly focus:ring-eastern-blue dark:bg-twine dark:hover:bg-saddle dark:focus:ring-twine',
     secondary:
       'bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-500 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 dark:focus:ring-gray-600',
     danger:
       'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 dark:bg-red-700 dark:hover:bg-red-800 dark:focus:ring-red-600',
     success:
-      'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 dark:bg-green-700 dark:hover:bg-green-800 dark:focus:ring-green-600',
+      'bg-eastern-blue text-white hover:bg-kimberly focus:ring-eastern-blue dark:bg-twine dark:hover:bg-saddle dark:focus:ring-twine',
   };
 
   const sizes = {

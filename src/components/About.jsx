@@ -1,9 +1,89 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { CheckSquare, Target, Users, Zap, Shield, Clock } from 'lucide-react';
 import reactLogo from '../assets/react.svg';
+import { supabase } from '../supabaseClient';
+import { useAuth } from '../context/AuthContext';
 
 const About = () => {
+  const { session } = useAuth();
+  const [stats, setStats] = useState({
+    tasksCompleted: 0,
+    activeUsers: 0,
+    projectsManaged: 0,
+    timeSaved: 0
+  });
+
+  // Fetch dynamic stats
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        if (session?.user?.id) {
+          // Get user's completed tasks
+          const { data: userTasks, error: userError } = await supabase
+            .from('todos')
+            .select('*')
+            .eq('user_id', session.user.id);
+
+          if (!userError && userTasks) {
+            const completedTasks = userTasks.filter(task => task.status === 'completed').length;
+            setStats(prev => ({
+              ...prev,
+              tasksCompleted: completedTasks
+            }));
+          }
+        }
+
+        // Get total users count (this would be a real query in production)
+        const { data: allUsers, error: usersError } = await supabase
+          .from('todos')
+          .select('user_id')
+          .not('user_id', 'is', null);
+
+        if (!usersError && allUsers) {
+          const uniqueUsers = new Set(allUsers.map(task => task.user_id)).size;
+          setStats(prev => ({
+            ...prev,
+            activeUsers: uniqueUsers
+          }));
+        }
+
+        // Get total projects (categories)
+        const { data: allTasks, error: tasksError } = await supabase
+          .from('todos')
+          .select('category')
+          .not('category', 'is', null);
+
+        if (!tasksError && allTasks) {
+          const uniqueCategories = new Set(allTasks.map(task => task.category)).size;
+          setStats(prev => ({
+            ...prev,
+            projectsManaged: uniqueCategories
+          }));
+        }
+
+        // Calculate time saved (estimate: 5 minutes per completed task)
+        const { data: completedTasks, error: completedError } = await supabase
+          .from('todos')
+          .select('*')
+          .eq('status', 'completed');
+
+        if (!completedError && completedTasks) {
+          const timeSaved = Math.round(completedTasks.length * 5 / 60); // Convert to hours
+          setStats(prev => ({
+            ...prev,
+            timeSaved: timeSaved
+          }));
+        }
+
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+      }
+    };
+
+    fetchStats();
+  }, [session]);
+
   const features = [
     {
       type: 'image',
@@ -49,11 +129,11 @@ const About = () => {
     }
   ];
 
-  const stats = [
-    { label: 'Tasks Completed', value: '10,000+' },
-    { label: 'Active Users', value: '2,500+' },
-    { label: 'Projects Managed', value: '5,000+' },
-    { label: 'Time Saved', value: '50,000hrs' }
+  const statsData = [
+    { label: 'Tasks Completed', value: stats.tasksCompleted },
+    { label: 'Active Users', value: stats.activeUsers },
+    { label: 'Projects Managed', value: stats.projectsManaged },
+    { label: 'Time Saved', value: `${stats.timeSaved}hrs` }
   ];
 
   return (
@@ -76,11 +156,22 @@ const About = () => {
 
       {/* Stats Section */}
       <motion.div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
-        {stats.map((stat) => (
-          <motion.div key={stat.label} className="text-center">
-            <div className="text-3xl md:text-4xl font-bold text-orange-600 dark:text-orange-400 mb-2">
+        {statsData.map((stat, index) => (
+          <motion.div 
+            key={stat.label} 
+            className="text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+          >
+            <motion.div 
+              className="text-3xl md:text-4xl font-bold text-eastern-blue dark:text-chardonnay mb-2"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: index * 0.1 + 0.3, type: "spring", stiffness: 200 }}
+            >
               {stat.value}
-            </div>
+            </motion.div>
             <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">
               {stat.label}
             </div>
@@ -95,9 +186,9 @@ const About = () => {
           return (
             <div
               key={feature.title}
-              className="bg-orange-50 dark:bg-gray-800 p-6 rounded-xl border border-orange-100 dark:border-gray-700 hover:shadow-lg transition-shadow"
+              className="bg-athens-gray dark:bg-saddle p-6 rounded-xl border border-chardonnay dark:border-twine hover:shadow-lg transition-shadow"
             >
-              <div className="bg-orange-600 dark:bg-orange-500 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+              <div className="bg-eastern-blue dark:bg-twine w-12 h-12 rounded-lg flex items-center justify-center mb-4">
                 {feature.type === 'image' ? (
                   <img src={IconComponent} alt={feature.title} className="h-6 w-6" />
                 ) : (
@@ -116,18 +207,18 @@ const About = () => {
       </div>
 
       {/* Call to Action */}
-      <div className="bg-gradient-to-r from-orange-600 to-orange-700 dark:from-orange-700 dark:to-orange-800 rounded-2xl p-8 md:p-12 text-center">
+      <div className="bg-gradient-to-r from-eastern-blue to-kimberly dark:from-saddle dark:to-twine rounded-2xl p-8 md:p-12 text-center">
         <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
           Ready to Get Started?
         </h2>
-        <p className="text-orange-100 text-lg mb-8 max-w-2xl mx-auto">
-          Join thousands of users who have transformed their productivity with TaskFlow. 
+        <p className="text-white/90 text-lg mb-8 max-w-2xl mx-auto">
+          Join our growing community of productive users. 
           Start organizing your tasks today and experience the difference.
         </p>
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="bg-white text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+          className="bg-white text-eastern-blue px-8 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
         >
           Start Your Journey
         </motion.button>

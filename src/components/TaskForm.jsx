@@ -57,7 +57,7 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-orange-50 dark:bg-gray-800 rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto border border-orange-200 dark:border-gray-700"
+        className="bg-green-50 dark:bg-gray-800 rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto border border-green-200 dark:border-gray-700"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
@@ -85,7 +85,7 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
                 value={formData.title}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 placeholder="Enter task title..."
               />
             </div>
@@ -100,7 +100,7 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
                 value={formData.description}
                 onChange={handleChange}
                 rows={3}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
                 placeholder="Describe your task..."
               />
             </div>
@@ -116,7 +116,7 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
                   name="priority"
                   value={formData.priority}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 >
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
@@ -135,7 +135,7 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
                   name="dueDate"
                   value={formData.dueDate}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -151,7 +151,7 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 placeholder="e.g., Work, Personal, Design..."
               />
             </div>
@@ -166,7 +166,7 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
               </Button>
               <Button
                 type="submit"
-                className="bg-orange-600 dark:bg-orange-500 text-white hover:bg-orange-700 dark:hover:bg-orange-600"
+                className="bg-green-600 dark:bg-green-500 text-white hover:bg-green-700 dark:hover:bg-green-600"
               >
                 {task ? 'Update Task' : 'Create Task'}
               </Button>

@@ -20,7 +20,7 @@ const Navbar = ({ darkMode, toggleDarkMode, searchQuery, setSearchQuery }) => {
     <motion.nav
       initial={{ y: -64 }}
       animate={{ y: 0 }}
-      className="fixed top-0 left-0 right-0 z-50 shadow-sm border-b border-orange-200/40 dark:border-gray-700 transition-colors bg-gradient-to-r from-orange-500 to-rose-500 dark:from-orange-700 dark:to-rose-700"
+      className="fixed top-0 left-0 right-0 z-50 shadow-sm border-b border-eastern-blue/20 dark:border-saddle transition-colors bg-gradient-to-r from-eastern-blue to-kimberly dark:from-saddle dark:to-black"
     >
       <div className="w-full">
         <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
@@ -97,7 +97,7 @@ const Navbar = ({ darkMode, toggleDarkMode, searchQuery, setSearchQuery }) => {
                 </Link>
                 <Link
                   to="/signup"
-                  className="bg-white/90 text-orange-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-white"
+                  className="bg-white/90 text-green-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-white"
                 >
                   Sign Up
                 </Link>

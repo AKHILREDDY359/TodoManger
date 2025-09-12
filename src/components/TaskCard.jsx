@@ -131,7 +131,7 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
             </Button>
             <Button
               type="submit"
-              className="bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600 text-white"
+              className="bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white"
             >
               {task ? 'Update Task' : 'Create Task'}
             </Button>

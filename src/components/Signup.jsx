@@ -25,14 +25,9 @@ const Signup = () => {
           alert('✅ Account created and signed in!');
           navigate('/dashboard');
         } else {
-          // If confirmations are enabled, attempt immediate login to support dev/demo flows
-          const { error: signInErr } = await supabase.auth.signInWithPassword({ email, password });
-          if (!signInErr) {
-            navigate('/dashboard');
-          } else {
-            alert('✅ Account created! Please check your email to confirm.');
-            navigate('/login');
-          }
+          // If confirmations are enabled, user needs to check email
+          alert('✅ Account created! Please check your email to confirm your account, then you can sign in.');
+          navigate('/login');
         }
       }
     } catch (err) {
@@ -45,7 +40,7 @@ const Signup = () => {
 
   return (
     <div className="min-h-[calc(100vh-16rem)] flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-white dark:bg-gray-800 border border-orange-200 dark:border-gray-700 rounded-2xl shadow-sm p-6">
+      <div className="w-full max-w-md bg-white dark:bg-saddle border border-chardonnay dark:border-twine rounded-2xl shadow-sm p-6">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Create an account</h1>
         <p className="text-gray-600 dark:text-gray-300 mb-6">Start managing your tasks</p>
 
@@ -57,7 +52,7 @@ const Signup = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-eastern-blue focus:border-transparent"
             />
           </div>
           <div>
@@ -67,14 +62,14 @@ const Signup = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-eastern-blue focus:border-transparent"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-orange-600 hover:bg-orange-700 disabled:opacity-60 text-white px-4 py-3 rounded-lg font-medium transition-colors"
+            className="w-full bg-eastern-blue hover:bg-kimberly disabled:opacity-60 text-white px-4 py-3 rounded-lg font-medium transition-colors"
           >
             {loading ? 'Creating account...' : 'Sign Up'}
           </button>
@@ -82,7 +77,7 @@ const Signup = () => {
 
         <p className="mt-4 text-sm text-gray-600 dark:text-gray-300 text-center">
           Already have an account?{' '}
-          <Link to="/login" className="text-orange-600 hover:underline">Sign in</Link>
+          <Link to="/login" className="text-eastern-blue hover:underline">Sign in</Link>
         </p>
       </div>
     </div>

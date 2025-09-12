@@ -185,18 +185,94 @@ const TaskDashboard = ({ searchQuery = "" }) => {
         <p className="text-base md:text-lg text-gray-700 dark:text-gray-300">
           Manage and track your tasks efficiently
         </p>
-        <div className="mt-8 flex items-center justify-center">
-          <div className="relative w-full max-w-3xl">
-            <img
-              src="/hero-animated.svg"
-              alt="Animated tasks calendar"
-              className="w-full rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700"
-            />
-            <div className="absolute inset-x-0 top-[23%] md:top-[22%] px-3 py-1 text-white text-sm md:text-base font-semibold tracking-wide text-center pointer-events-none">
-              {now.toLocaleString("default", { month: "long" })} {now.getDate()}
+        {/* Animated Banner */}
+        <motion.div 
+          className="mt-8 relative overflow-hidden rounded-2xl shadow-lg"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="bg-gradient-to-r from-eastern-blue via-kimberly to-logan dark:from-saddle dark:via-twine dark:to-chardonnay p-8 md:p-12 text-white relative">
+            {/* Animated background pattern */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-4 left-4 w-20 h-20 bg-white rounded-full animate-pulse"></div>
+              <div className="absolute top-8 right-8 w-16 h-16 bg-white rounded-full animate-pulse delay-1000"></div>
+              <div className="absolute bottom-6 left-12 w-12 h-12 bg-white rounded-full animate-pulse delay-500"></div>
+              <div className="absolute bottom-4 right-4 w-24 h-24 bg-white rounded-full animate-pulse delay-1500"></div>
             </div>
+            
+            {/* Content */}
+            <div className="relative z-10 text-center">
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+                className="mb-4"
+              >
+                <Calendar className="h-12 w-12 mx-auto mb-3 text-white/90" />
+              </motion.div>
+              
+              <motion.h2
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+                className="text-2xl md:text-3xl font-bold mb-2"
+              >
+                {now.toLocaleString("default", { month: "long" })} {now.getDate()}
+              </motion.h2>
+              
+              <motion.p
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+                className="text-lg md:text-xl text-white/90 font-medium"
+              >
+                {now.toLocaleString("default", { weekday: "long" })}
+              </motion.p>
+              
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.6, duration: 0.5 }}
+                className="mt-4 text-sm text-white/80"
+              >
+                {isAuthed ? `${taskStats.total} tasks • ${taskStats.completed} completed` : 'Login to start managing your tasks'}
+              </motion.div>
+            </div>
+            
+            {/* Floating elements */}
+            <motion.div
+              animate={{ 
+                y: [0, -10, 0],
+                rotate: [0, 5, 0]
+              }}
+              transition={{ 
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="absolute top-6 right-6 text-white/20"
+            >
+              <Plus className="h-6 w-6" />
+            </motion.div>
+            
+            <motion.div
+              animate={{ 
+                y: [0, 10, 0],
+                rotate: [0, -5, 0]
+              }}
+              transition={{ 
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 1
+              }}
+              className="absolute bottom-6 left-6 text-white/20"
+            >
+              <BarChart3 className="h-6 w-6" />
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </motion.div>
 
       {/* Stats */}
@@ -206,7 +282,7 @@ const TaskDashboard = ({ searchQuery = "" }) => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1 }}
-          className="bg-orange-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-orange-200 dark:border-gray-700"
+          className="bg-athens-gray dark:bg-saddle p-6 rounded-xl shadow-sm border border-chardonnay dark:border-twine"
         >
           <div className="flex items-center justify-between">
             <div>
@@ -217,7 +293,7 @@ const TaskDashboard = ({ searchQuery = "" }) => {
                 {taskStats.total}
               </p>
             </div>
-            <BarChart3 className="h-8 w-8 text-orange-600 dark:text-orange-400" />
+            <BarChart3 className="h-8 w-8 text-eastern-blue dark:text-chardonnay" />
           </div>
         </motion.div>
 
@@ -226,14 +302,14 @@ const TaskDashboard = ({ searchQuery = "" }) => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.2 }}
-          className="bg-orange-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-orange-200 dark:border-gray-700"
+          className="bg-athens-gray dark:bg-saddle p-6 rounded-xl shadow-sm border border-chardonnay dark:border-twine"
         >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                 Completed
               </p>
-              <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+              <p className="text-2xl font-bold text-eastern-blue dark:text-chardonnay">
                 {taskStats.completed}
               </p>
             </div>
@@ -248,7 +324,7 @@ const TaskDashboard = ({ searchQuery = "" }) => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3 }}
-          className="bg-orange-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-orange-200 dark:border-gray-700"
+          className="bg-athens-gray dark:bg-saddle p-6 rounded-xl shadow-sm border border-chardonnay dark:border-twine"
         >
           <div className="flex items-center justify-between">
             <div>
@@ -270,18 +346,18 @@ const TaskDashboard = ({ searchQuery = "" }) => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.4 }}
-          className="bg-orange-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-orange-200 dark:border-gray-700"
+          className="bg-athens-gray dark:bg-saddle p-6 rounded-xl shadow-sm border border-chardonnay dark:border-twine"
         >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                 To Do
               </p>
-              <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+              <p className="text-2xl font-bold text-eastern-blue dark:text-chardonnay">
                 {taskStats.todo}
               </p>
             </div>
-            <Calendar className="h-8 w-8 text-orange-600 dark:text-orange-400" />
+            <Calendar className="h-8 w-8 text-eastern-blue dark:text-chardonnay" />
           </div>
         </motion.div>
       </div>
@@ -293,7 +369,7 @@ const TaskDashboard = ({ searchQuery = "" }) => {
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
           >
             <option value="all">All Tasks</option>
             <option value="todo">To Do</option>
@@ -305,7 +381,7 @@ const TaskDashboard = ({ searchQuery = "" }) => {
         <Button
           onClick={() => isAuthed && setShowForm(true)}
           disabled={!isAuthed}
-          className="bg-orange-600 hover:bg-orange-700 disabled:opacity-60 dark:bg-orange-500 dark:hover:bg-orange-600 text-white"
+          className="bg-eastern-blue hover:bg-kimberly disabled:opacity-60 dark:bg-twine dark:hover:bg-saddle text-white"
         >
           <Plus className="h-4 w-4 mr-2" />
           {isAuthed ? 'Add New Task' : 'Login to add tasks'}
@@ -375,19 +451,19 @@ const TaskDashboard = ({ searchQuery = "" }) => {
             </h3>
             <ul className="space-y-2 text-gray-600 dark:text-gray-300">
               <li className="flex items-center">
-                <div className="w-2 h-2 bg-orange-600 rounded-full mr-3"></div>
+                <div className="w-2 h-2 bg-eastern-blue rounded-full mr-3"></div>
                 Priority-based task organization
               </li>
               <li className="flex items-center">
-                <div className="w-2 h-2 bg-orange-600 rounded-full mr-3"></div>
+                <div className="w-2 h-2 bg-eastern-blue rounded-full mr-3"></div>
                 Real-time status tracking
               </li>
               <li className="flex items-center">
-                <div className="w-2 h-2 bg-orange-600 rounded-full mr-3"></div>
+                <div className="w-2 h-2 bg-eastern-blue rounded-full mr-3"></div>
                 Due date management
               </li>
               <li className="flex items-center">
-                <div className="w-2 h-2 bg-orange-600 rounded-full mr-3"></div>
+                <div className="w-2 h-2 bg-eastern-blue rounded-full mr-3"></div>
                 Category-based filtering
               </li>
             </ul>
@@ -403,7 +479,7 @@ const TaskDashboard = ({ searchQuery = "" }) => {
             </p>
             <div className="flex items-center space-x-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                <div className="text-2xl font-bold text-eastern-blue dark:text-chardonnay">
                   {taskStats.total}
                 </div>
                 <div className="text-sm text-gray-500 dark:text-gray-400">
@@ -411,7 +487,7 @@ const TaskDashboard = ({ searchQuery = "" }) => {
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                <div className="text-2xl font-bold text-eastern-blue dark:text-chardonnay">
                   {Math.round((taskStats.completed / taskStats.total) * 100) ||
                     0}
                   %

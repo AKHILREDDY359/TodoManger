@@ -13,7 +13,7 @@ const ThemeToggle = ({ darkMode, toggleDarkMode }) => {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={toggleDarkMode}
-        className="bg-orange-600 dark:bg-orange-500 text-white p-3 rounded-full shadow-lg hover:shadow-xl transition-shadow"
+        className="bg-eastern-blue dark:bg-twine text-white p-3 rounded-full shadow-lg hover:shadow-xl transition-shadow"
       >
         <motion.div
           initial={false}

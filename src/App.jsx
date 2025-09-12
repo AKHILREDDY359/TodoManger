@@ -9,6 +9,7 @@ import About from './components/About';
 import ThemeToggle from './components/ThemeToggle';
 import Login from './components/Login';
 import Signup from './components/Signup';
+import EmailVerification from './components/EmailVerification';
 import Footer from './components/Footer';
 // Auth provider is applied in main.jsx
 
@@ -35,7 +36,7 @@ const App = () => {
   return (
     <ThemeProvider>
       <Router>
-        <div className="min-h-[100dvh] bg-[#ECEEDF] dark:bg-gray-900 transition-colors flex flex-col">
+        <div className="min-h-[100dvh] bg-athens-gray dark:bg-black transition-colors flex flex-col">
           <Navbar
             darkMode={darkMode}
             toggleDarkMode={toggleDarkMode}
@@ -50,6 +51,7 @@ const App = () => {
               <Route path="/about" element={<About />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/verify" element={<EmailVerification />} />
             </Routes>
           </main>
           <Footer />
