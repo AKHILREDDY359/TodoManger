@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { X, Calendar, Flag, Tag } from 'lucide-react';
+import { X, Calendar, Flag, Tag, Clock } from 'lucide-react';
 import Button from './Button';
 
 const TaskForm = ({ task, onSubmit, onCancel }) => {
@@ -9,16 +9,22 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
     description: '',
     priority: 'medium',
     dueDate: '',
+    dueTime: '',
     category: ''
   });
 
   useEffect(() => {
     if (task) {
+      // Extract time from dueDate if it exists
+      const dueDateTime = task.dueDate ? new Date(task.dueDate) : null;
+      const timeString = dueDateTime ? dueDateTime.toTimeString().slice(0, 5) : '';
+      
       setFormData({
         title: task.title || '',
         description: task.description || '',
         priority: task.priority || 'medium',
-        dueDate: task.dueDate || '',
+        dueDate: task.dueDate ? task.dueDate.split('T')[0] : '',
+        dueTime: timeString,
         category: task.category || ''
       });
     } else {
@@ -28,6 +34,7 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
         description: '',
         priority: 'medium',
         dueDate: '',
+        dueTime: '',
         category: ''
       });
     }
@@ -37,7 +44,18 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
     e.preventDefault();
     if (!formData.title.trim()) return;
 
-    onSubmit(formData);
+    // Combine date and time if both are provided
+    let combinedDateTime = formData.dueDate;
+    if (formData.dueDate && formData.dueTime) {
+      combinedDateTime = `${formData.dueDate}T${formData.dueTime}:00`;
+    }
+
+    const submitData = {
+      ...formData,
+      dueDate: combinedDateTime
+    };
+
+    onSubmit(submitData);
     // Don't reset form data here - let the parent component handle state
   };
 
@@ -141,6 +159,21 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
                   className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 />
               </div>
+            </div>
+
+            <div>
+              <label htmlFor="dueTime" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <Clock className="h-4 w-4 inline mr-1" />
+                Due Time
+              </label>
+              <input
+                type="time"
+                id="dueTime"
+                name="dueTime"
+                value={formData.dueTime}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              />
             </div>
 
             <div>

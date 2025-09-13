@@ -53,6 +53,32 @@ const TaskCard = ({ task, index, onEdit, onDelete, onStatusChange }) => {
     });
   };
 
+  const formatTime = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+
+  const formatDateTime = (dateString) => {
+    if (!dateString) return 'No due date';
+    const date = new Date(dateString);
+    const dateStr = date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+    const timeStr = date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+    return `${dateStr} at ${timeStr}`;
+  };
+
   const isOverdue = (dateString) => {
     if (!dateString) return false;
     const dueDate = new Date(dateString);
@@ -113,7 +139,7 @@ const TaskCard = ({ task, index, onEdit, onDelete, onStatusChange }) => {
         </div>
       </div>
 
-      {/* Category and Due Date */}
+      {/* Category and Due Date/Time */}
       <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
         <div className="flex items-center space-x-4">
           {task.category && (
@@ -125,7 +151,7 @@ const TaskCard = ({ task, index, onEdit, onDelete, onStatusChange }) => {
           <div className="flex items-center">
             <Calendar className="h-4 w-4 mr-1" />
             <span className={isOverdue(task.dueDate) ? 'text-red-600 dark:text-red-400 font-medium' : ''}>
-              {formatDate(task.dueDate)}
+              {formatDateTime(task.dueDate)}
             </span>
           </div>
         </div>
