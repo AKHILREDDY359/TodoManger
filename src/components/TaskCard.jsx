@@ -134,36 +134,30 @@ const TaskCard = ({ task, index, onEdit, onDelete, onStatusChange }) => {
       {/* Status Change Buttons */}
       <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
         <div className="flex space-x-2">
-          <Button
-            onClick={() => onStatusChange(task.id, 'todo')}
-            className={`flex-1 text-xs py-2 px-3 font-semibold shadow-md hover:shadow-lg transition-all duration-200 ${
-              task.status === 'todo'
-                ? 'bg-gray-700 dark:bg-gray-500 text-white border-2 border-gray-800 dark:border-gray-300 shadow-lg'
-                : 'bg-gray-500 dark:bg-gray-600 text-white hover:bg-gray-600 dark:hover:bg-gray-700 border border-gray-600 dark:border-gray-700'
-            }`}
-          >
-            To Do
-          </Button>
-          <Button
-            onClick={() => onStatusChange(task.id, 'in-progress')}
-            className={`flex-1 text-xs py-2 px-3 font-semibold shadow-md hover:shadow-lg transition-all duration-200 ${
-              task.status === 'in-progress'
-                ? 'bg-blue-700 dark:bg-blue-500 text-white border-2 border-blue-800 dark:border-blue-300 shadow-lg'
-                : 'bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-700 border border-blue-600 dark:border-blue-700'
-            }`}
-          >
-            In Progress
-          </Button>
-          <Button
-            onClick={() => onStatusChange(task.id, 'completed')}
-            className={`flex-1 text-xs py-2 px-3 font-semibold shadow-md hover:shadow-lg transition-all duration-200 ${
-              task.status === 'completed'
-                ? 'bg-green-700 dark:bg-green-500 text-white border-2 border-green-800 dark:border-green-300 shadow-lg'
-                : 'bg-green-500 dark:bg-green-600 text-white hover:bg-green-600 dark:hover:bg-green-700 border border-green-600 dark:border-green-700'
-            }`}
-          >
-            Complete
-          </Button>
+          {task.status !== 'todo' && (
+            <Button
+              onClick={() => onStatusChange(task.id, 'todo')}
+              className="flex-1 text-xs py-2 px-3 bg-gray-500 dark:bg-gray-600 text-white hover:bg-gray-600 dark:hover:bg-gray-700 font-semibold shadow-md hover:shadow-lg transition-all duration-200 border border-gray-600 dark:border-gray-700"
+            >
+              Mark as To Do
+            </Button>
+          )}
+          {task.status !== 'in-progress' && (
+            <Button
+              onClick={() => onStatusChange(task.id, 'in-progress')}
+              className="flex-1 text-xs py-2 px-3 bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-700 font-semibold shadow-md hover:shadow-lg transition-all duration-200 border border-blue-600 dark:border-blue-700"
+            >
+              Mark as In Progress
+            </Button>
+          )}
+          {task.status !== 'completed' && (
+            <Button
+              onClick={() => onStatusChange(task.id, 'completed')}
+              className="flex-1 text-xs py-2 px-3 bg-green-500 dark:bg-green-600 text-white hover:bg-green-600 dark:hover:bg-green-700 font-semibold shadow-md hover:shadow-lg transition-all duration-200 border border-green-600 dark:border-green-700"
+            >
+              Mark as Complete
+            </Button>
+          )}
         </div>
       </div>
     </motion.div>
