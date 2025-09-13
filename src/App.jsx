@@ -10,6 +10,7 @@ import ThemeToggle from './components/ThemeToggle';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import EmailVerification from './components/EmailVerification';
+import ResetPassword from './components/ResetPassword';
 import Footer from './components/Footer';
 // Auth provider is applied in main.jsx
 
@@ -52,6 +53,7 @@ const App = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/verify" element={<EmailVerification />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
             </Routes>
           </main>
           <Footer />

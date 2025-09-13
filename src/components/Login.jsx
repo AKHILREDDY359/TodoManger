@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
+import ForgotPassword from './ForgotPassword';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const navigate = useNavigate();
 
   const onSubmit = async (e) => {
@@ -30,6 +32,17 @@ const Login = () => {
       setLoading(false);
     }
   };
+
+  if (showForgotPassword) {
+    return (
+      <div className="min-h-[calc(100vh-16rem)] flex items-center justify-center px-4">
+        <ForgotPassword 
+          onBack={() => setShowForgotPassword(false)}
+          onSuccess={() => setShowForgotPassword(false)}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[calc(100vh-16rem)] flex items-center justify-center px-4">
@@ -68,10 +81,21 @@ const Login = () => {
           </button>
         </form>
 
-        <p className="mt-4 text-sm text-gray-600 dark:text-gray-300 text-center">
-          New user?{' '}
-          <Link to="/signup" className="text-eastern-blue hover:underline">Create an account</Link>
-        </p>
+        <div className="mt-4 text-center space-y-2">
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            New user?{' '}
+            <Link to="/signup" className="text-eastern-blue hover:underline">Create an account</Link>
+          </p>
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            Forgot your password?{' '}
+            <button
+              onClick={() => setShowForgotPassword(true)}
+              className="text-eastern-blue hover:underline"
+            >
+              Reset it here
+            </button>
+          </p>
+        </div>
       </div>
     </div>
   );
