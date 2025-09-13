@@ -138,19 +138,19 @@ const TaskCard = ({ task, index, onEdit, onDelete, onStatusChange }) => {
             onClick={() => onStatusChange(task.id, 'todo')}
             className="flex-1 text-xs py-2 px-3 bg-gray-500 dark:bg-gray-600 text-white hover:bg-gray-600 dark:hover:bg-gray-700 font-semibold shadow-md hover:shadow-lg transition-all duration-200 border border-gray-600 dark:border-gray-700"
           >
-            To Do
+            Mark as To Do
           </Button>
           <Button
             onClick={() => onStatusChange(task.id, 'in-progress')}
             className="flex-1 text-xs py-2 px-3 bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-700 font-semibold shadow-md hover:shadow-lg transition-all duration-200 border border-blue-600 dark:border-blue-700"
           >
-            In Progress
+            Mark as In Progress
           </Button>
           <Button
             onClick={() => onStatusChange(task.id, 'completed')}
             className="flex-1 text-xs py-2 px-3 bg-green-500 dark:bg-green-600 text-white hover:bg-green-600 dark:hover:bg-green-700 font-semibold shadow-md hover:shadow-lg transition-all duration-200 border border-green-600 dark:border-green-700"
           >
-            Complete
+            Mark as Complete
           </Button>
         </div>
       </div>
