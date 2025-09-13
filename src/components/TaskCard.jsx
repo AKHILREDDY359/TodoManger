@@ -137,7 +137,7 @@ const TaskCard = ({ task, index, onEdit, onDelete, onStatusChange }) => {
           {task.status !== 'todo' && (
             <Button
               onClick={() => onStatusChange(task.id, 'todo')}
-              className="flex-1 text-xs py-2 px-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+              className="flex-1 text-xs py-2 px-3 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-500 font-medium border border-gray-300 dark:border-gray-500"
             >
               To Do
             </Button>
@@ -145,7 +145,7 @@ const TaskCard = ({ task, index, onEdit, onDelete, onStatusChange }) => {
           {task.status !== 'in-progress' && (
             <Button
               onClick={() => onStatusChange(task.id, 'in-progress')}
-              className="flex-1 text-xs py-2 px-3 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/50"
+              className="flex-1 text-xs py-2 px-3 bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-700 font-semibold shadow-md hover:shadow-lg transition-all duration-200 border border-blue-600 dark:border-blue-700"
             >
               In Progress
             </Button>
@@ -153,7 +153,7 @@ const TaskCard = ({ task, index, onEdit, onDelete, onStatusChange }) => {
           {task.status !== 'completed' && (
             <Button
               onClick={() => onStatusChange(task.id, 'completed')}
-              className="flex-1 text-xs py-2 px-3 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50"
+              className="flex-1 text-xs py-2 px-3 bg-green-500 dark:bg-green-600 text-white hover:bg-green-600 dark:hover:bg-green-700 font-semibold shadow-md hover:shadow-lg transition-all duration-200 border border-green-600 dark:border-green-700"
             >
               Complete
             </Button>
