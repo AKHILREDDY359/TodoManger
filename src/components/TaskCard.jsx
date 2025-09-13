@@ -164,8 +164,8 @@ const TaskCard = ({ task, index, onEdit, onDelete, onStatusChange }) => {
             onClick={() => onStatusChange(task.id, 'todo')}
             className={`flex-1 text-xs py-2 px-3 font-semibold shadow-md hover:shadow-lg transition-all duration-200 ${
               task.status === 'todo'
-                ? 'bg-gray-300 dark:bg-gray-500 text-gray-600 dark:text-gray-300 border border-gray-400 dark:border-gray-600 opacity-75'
-                : 'bg-gray-400 dark:bg-gray-600 text-white hover:bg-gray-500 dark:hover:bg-gray-700 border border-gray-500 dark:border-gray-700'
+                ? 'bg-orange-300 dark:bg-orange-500 text-orange-800 dark:text-orange-100 border border-orange-400 dark:border-orange-600 opacity-90'
+                : 'bg-orange-500 dark:bg-orange-600 text-white hover:bg-orange-600 dark:hover:bg-orange-700 border border-orange-600 dark:border-orange-700'
             }`}
           >
             {task.status === 'todo' ? 'Added to To Do' : 'Mark as To Do'}
