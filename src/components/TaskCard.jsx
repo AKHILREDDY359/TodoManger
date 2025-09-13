@@ -136,31 +136,19 @@ const TaskCard = ({ task, index, onEdit, onDelete, onStatusChange }) => {
         <div className="flex space-x-2">
           <Button
             onClick={() => onStatusChange(task.id, 'todo')}
-            className={`flex-1 text-xs py-2 px-3 font-semibold shadow-md hover:shadow-lg transition-all duration-200 ${
-              task.status === 'todo'
-                ? 'bg-gray-600 dark:bg-gray-500 text-white border border-gray-700 dark:border-gray-400'
-                : 'bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-500 border border-gray-300 dark:border-gray-500'
-            }`}
+            className="flex-1 text-xs py-2 px-3 bg-gray-500 dark:bg-gray-600 text-white hover:bg-gray-600 dark:hover:bg-gray-700 font-semibold shadow-md hover:shadow-lg transition-all duration-200 border border-gray-600 dark:border-gray-700"
           >
             To Do
           </Button>
           <Button
             onClick={() => onStatusChange(task.id, 'in-progress')}
-            className={`flex-1 text-xs py-2 px-3 font-semibold shadow-md hover:shadow-lg transition-all duration-200 ${
-              task.status === 'in-progress'
-                ? 'bg-blue-600 dark:bg-blue-500 text-white border border-blue-700 dark:border-blue-400'
-                : 'bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-700 border border-blue-600 dark:border-blue-700'
-            }`}
+            className="flex-1 text-xs py-2 px-3 bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-700 font-semibold shadow-md hover:shadow-lg transition-all duration-200 border border-blue-600 dark:border-blue-700"
           >
             In Progress
           </Button>
           <Button
             onClick={() => onStatusChange(task.id, 'completed')}
-            className={`flex-1 text-xs py-2 px-3 font-semibold shadow-md hover:shadow-lg transition-all duration-200 ${
-              task.status === 'completed'
-                ? 'bg-green-600 dark:bg-green-500 text-white border border-green-700 dark:border-green-400'
-                : 'bg-green-500 dark:bg-green-600 text-white hover:bg-green-600 dark:hover:bg-green-700 border border-green-600 dark:border-green-700'
-            }`}
+            className="flex-1 text-xs py-2 px-3 bg-green-500 dark:bg-green-600 text-white hover:bg-green-600 dark:hover:bg-green-700 font-semibold shadow-md hover:shadow-lg transition-all duration-200 border border-green-600 dark:border-green-700"
           >
             Complete
           </Button>
