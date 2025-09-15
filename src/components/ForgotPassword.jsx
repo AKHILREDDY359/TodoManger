@@ -25,25 +25,51 @@ const ForgotPassword = ({ onBack, onSuccess }) => {
       return;
     }
 
+    // Test Supabase connection first
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      console.log('Supabase connection test:', { user, userError });
+    } catch (connError) {
+      console.error('Supabase connection error:', connError);
+      setError('Unable to connect to authentication service. Please try again later.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      console.log('Attempting to send password reset email to:', email);
+      console.log('Redirect URL:', `${window.location.origin}/reset-password`);
+      
+      // Note: We can't check if user exists from client side for security reasons
+      // The resetPasswordForEmail will handle this gracefully
+      
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password`,
       });
+
+      console.log('Password reset response:', { data, error });
 
       if (error) {
         console.error('Password reset error:', error);
         // Handle specific error cases
-        if (error.message.includes('rate limit')) {
-          setError('Too many requests. Please wait a moment before trying again.');
+        if (error.message.includes('rate limit') || error.message.includes('too many requests')) {
+          setError('Email service is temporarily unavailable due to high usage. Please try again in a few minutes or contact support.');
         } else if (error.message.includes('not found')) {
           setError('No account found with this email address.');
         } else if (error.message.includes('invalid email')) {
           setError('Please enter a valid email address.');
+        } else if (error.message.includes('email not confirmed')) {
+          setError('Please verify your email address first before resetting password.');
+        } else if (error.message.includes('signup disabled')) {
+          setError('Account creation is currently disabled. Please contact support.');
+        } else if (error.message.includes('email rate limit')) {
+          setError('Too many password reset attempts. Please wait 1 hour before trying again.');
         } else {
-          setError(error.message);
+          setError(`Error: ${error.message}`);
         }
       } else {
-        setMessage('Password reset email sent! Check your inbox.');
+        console.log('Password reset email sent successfully');
+        setMessage('Password reset email sent! Check your inbox and spam folder.');
         setIsSuccess(true);
         if (onSuccess) onSuccess();
       }
@@ -90,9 +116,26 @@ const ForgotPassword = ({ onBack, onSuccess }) => {
               Back to Login
             </Button>
             
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Didn't receive the email? Check your spam folder or try again.
-            </p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Didn't receive the email? Check your spam folder or try again.
+        </p>
+        <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
+          If you still don't receive the email, please check your Supabase project settings 
+          to ensure email authentication is enabled.
+        </p>
+        <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+          ⚠️ Supabase has low email limits (3-5 emails/hour). If you've been testing, 
+          you may have hit the rate limit. Wait 1 hour or configure custom SMTP.
+        </p>
+        <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <p className="text-sm text-blue-700 dark:text-blue-300 font-medium mb-2">
+            Alternative: Contact Support
+          </p>
+          <p className="text-xs text-blue-600 dark:text-blue-400">
+            If emails aren't working, you can contact support with your email address 
+            to manually reset your password.
+          </p>
+        </div>
           </div>
         </div>
       </motion.div>
@@ -178,6 +221,57 @@ const ForgotPassword = ({ onBack, onSuccess }) => {
             'Send Reset Link'
           )}
         </Button>
+
+        {/* Debug buttons - remove in production */}
+        <div className="space-y-2 mt-2">
+          <button
+            type="button"
+            onClick={async () => {
+              console.log('Testing Supabase connection...');
+              try {
+                const { data, error } = await supabase.auth.getSession();
+                console.log('Session test:', { data, error });
+                
+                const { data: userData, error: userError } = await supabase.auth.getUser();
+                console.log('User test:', { userData, userError });
+                
+                alert(`Supabase connection test:\nSession: ${error ? 'Error' : 'OK'}\nUser: ${userError ? 'Error' : 'OK'}\nCheck console for details.`);
+              } catch (err) {
+                console.error('Connection test error:', err);
+                alert('Connection test failed. Check console for details.');
+              }
+            }}
+            className="w-full px-4 py-2 text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
+          >
+            Test Supabase Connection
+          </button>
+          
+          <button
+            type="button"
+            onClick={async () => {
+              console.log('Testing password reset with test email...');
+              try {
+                const testEmail = 'test@example.com';
+                const { data, error } = await supabase.auth.resetPasswordForEmail(testEmail, {
+                  redirectTo: `${window.location.origin}/reset-password`,
+                });
+                console.log('Password reset test response:', { data, error });
+                
+                if (error) {
+                  alert(`Password reset test failed:\n${error.message}\n\nThis might indicate rate limiting or configuration issues.`);
+                } else {
+                  alert('Password reset test successful! Check Supabase logs for email delivery status.');
+                }
+              } catch (err) {
+                console.error('Password reset test error:', err);
+                alert('Password reset test failed. Check console for details.');
+              }
+            }}
+            className="w-full px-4 py-2 text-xs bg-blue-200 dark:bg-blue-700 text-blue-700 dark:text-blue-300 rounded hover:bg-blue-300 dark:hover:bg-blue-600"
+          >
+            Test Password Reset (with test email)
+          </button>
+        </div>
       </form>
 
       <div className="mt-6 text-center">
