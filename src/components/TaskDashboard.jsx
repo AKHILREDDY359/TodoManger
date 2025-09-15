@@ -15,8 +15,61 @@ const TaskDashboard = ({ searchQuery = "" }) => {
   const [filter, setFilter] = useState("all");
   const [editingTask, setEditingTask] = useState(null);
   const [now, setNow] = useState(new Date());
+  const [globalStats, setGlobalStats] = useState({
+    totalTasks: 0,
+    totalUsers: 0,
+    completedTasks: 0,
+    inProgressTasks: 0,
+    todoTasks: 0,
+    completionRate: 0
+  });
 
   const isAuthed = !!session;
+
+  // Load global statistics
+  const fetchGlobalStats = async () => {
+    try {
+      // Fetch all tasks from all users
+      const { data: allTasks, error: tasksError } = await supabase
+        .from("todos")
+        .select("id, status, user_id");
+
+      if (tasksError) {
+        console.error("Error fetching global tasks:", tasksError);
+        return;
+      }
+
+      // Fetch unique users count
+      const { data: users, error: usersError } = await supabase
+        .from("todos")
+        .select("user_id")
+        .not("user_id", "is", null);
+
+      if (usersError) {
+        console.error("Error fetching users:", usersError);
+        return;
+      }
+
+      // Calculate statistics
+      const uniqueUsers = new Set(users.map(u => u.user_id));
+      const totalTasks = allTasks.length;
+      const completedTasks = allTasks.filter(t => t.status === 'completed').length;
+      const inProgressTasks = allTasks.filter(t => t.status === 'in-progress').length;
+      const todoTasks = allTasks.filter(t => t.status === 'todo').length;
+      const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+      setGlobalStats({
+        totalTasks,
+        totalUsers: uniqueUsers.size,
+        completedTasks,
+        inProgressTasks,
+        todoTasks,
+        completionRate
+      });
+    } catch (error) {
+      console.error("Error fetching global stats:", error);
+    }
+  };
 
   // Load tasks from Supabase
   useEffect(() => {
@@ -47,6 +100,11 @@ const TaskDashboard = ({ searchQuery = "" }) => {
 
     fetchTasks();
   }, [session, isAuthed]);
+
+  // Load global statistics
+  useEffect(() => {
+    fetchGlobalStats();
+  }, []);
 
   // Update clock every day at midnight
   useEffect(() => {
@@ -519,17 +577,16 @@ const TaskDashboard = ({ searchQuery = "" }) => {
           </div>
           <div>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-              Benefits
+              Global Statistics
             </h3>
             <p className="text-gray-600 dark:text-gray-300 mb-4">
-              TaskFlow helps you stay organized and productive by providing a
-              clean, intuitive interface for managing your daily tasks and
-              long-term projects.
+              Real-time statistics from all users across the platform, showing
+              the collective productivity and task management activity.
             </p>
-            <div className="flex items-center space-x-4">
+            <div className="grid grid-cols-2 gap-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-eastern-blue dark:text-chardonnay">
-                  {taskStats.total}
+                  {globalStats.totalTasks}
                 </div>
                 <div className="text-sm text-gray-500 dark:text-gray-400">
                   Total Tasks
@@ -537,9 +594,23 @@ const TaskDashboard = ({ searchQuery = "" }) => {
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-eastern-blue dark:text-chardonnay">
-                  {Math.round((taskStats.completed / taskStats.total) * 100) ||
-                    0}
-                  %
+                  {globalStats.totalUsers}
+                </div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  Active Users
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                  {globalStats.completedTasks}
+                </div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  Completed
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-eastern-blue dark:text-chardonnay">
+                  {globalStats.completionRate}%
                 </div>
                 <div className="text-sm text-gray-500 dark:text-gray-400">
                   Completion Rate

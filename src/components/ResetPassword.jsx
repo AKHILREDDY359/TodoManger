@@ -17,14 +17,57 @@ const ResetPassword = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if user has a valid session for password reset
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        navigate('/login');
+    // Handle password reset from email link
+    const handlePasswordReset = async () => {
+      try {
+        // Get the URL hash parameters
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token');
+        const type = hashParams.get('type');
+
+        // If we have tokens from the email link, set the session
+        if (accessToken && refreshToken && type === 'recovery') {
+          const { error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken
+          });
+          
+          if (error) {
+            console.error('Error setting session:', error);
+            setError('Invalid or expired reset link. Please request a new password reset.');
+            setTimeout(() => navigate('/login'), 3000);
+          }
+        } else {
+          // Check if user already has a valid session
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session) {
+            setError('No valid reset session found. Please request a new password reset.');
+            setTimeout(() => navigate('/login'), 3000);
+          }
+        }
+      } catch (err) {
+        console.error('Error handling password reset:', err);
+        setError('An error occurred while processing the reset link.');
+        setTimeout(() => navigate('/login'), 3000);
       }
     };
-    checkSession();
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        // User is in password recovery mode
+        console.log('Password recovery mode activated');
+      } else if (event === 'SIGNED_OUT' && !session) {
+        // User was signed out, redirect to login
+        navigate('/login');
+      }
+    });
+
+    handlePasswordReset();
+
+    // Cleanup subscription
+    return () => subscription.unsubscribe();
   }, [navigate]);
 
   const handleSubmit = async (e) => {
@@ -52,7 +95,16 @@ const ResetPassword = () => {
       });
 
       if (error) {
-        setError(error.message);
+        console.error('Password update error:', error);
+        // Handle specific error cases
+        if (error.message.includes('weak password')) {
+          setError('Password is too weak. Please choose a stronger password.');
+        } else if (error.message.includes('session')) {
+          setError('Your session has expired. Please request a new password reset.');
+          setTimeout(() => navigate('/login'), 3000);
+        } else {
+          setError(error.message);
+        }
       } else {
         setMessage('Password updated successfully!');
         setIsSuccess(true);
@@ -208,10 +260,17 @@ const ResetPassword = () => {
 
           <Button
             type="submit"
-            disabled={loading}
+            disabled={loading || !password.trim() || !confirmPassword.trim()}
             className="w-full bg-green-600 dark:bg-green-500 text-white hover:bg-green-700 dark:hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Updating...' : 'Update Password'}
+            {loading ? (
+              <div className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                Updating...
+              </div>
+            ) : (
+              'Update Password'
+            )}
           </Button>
         </form>
       </motion.div>
@@ -220,3 +279,4 @@ const ResetPassword = () => {
 };
 
 export default ResetPassword;
+

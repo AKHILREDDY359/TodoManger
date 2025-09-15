@@ -13,6 +13,61 @@ const About = () => {
     projectsManaged: 0,
     timeSaved: 0
   });
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [animatedStats, setAnimatedStats] = useState({
+    tasksCompleted: 0,
+    activeUsers: 0,
+    projectsManaged: 0,
+    timeSaved: 0
+  });
+
+  // Update clock every second
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // Animate counters when stats change
+  useEffect(() => {
+    const animateCounters = () => {
+      const duration = 2000; // 2 seconds
+      const steps = 60; // 60 steps for smooth animation
+      const stepDuration = duration / steps;
+
+      Object.keys(stats).forEach(key => {
+        const targetValue = stats[key];
+        const startValue = animatedStats[key];
+        const increment = (targetValue - startValue) / steps;
+        
+        let currentStep = 0;
+        const counter = setInterval(() => {
+          currentStep++;
+          const newValue = Math.round(startValue + (increment * currentStep));
+          
+          setAnimatedStats(prev => ({
+            ...prev,
+            [key]: Math.min(newValue, targetValue)
+          }));
+
+          if (currentStep >= steps) {
+            clearInterval(counter);
+            setAnimatedStats(prev => ({
+              ...prev,
+              [key]: targetValue
+            }));
+          }
+        }, stepDuration);
+      });
+    };
+
+    // Only animate if stats have changed
+    if (stats.tasksCompleted > 0 || stats.activeUsers > 0 || stats.projectsManaged > 0 || stats.timeSaved > 0) {
+      animateCounters();
+    }
+  }, [stats]);
 
   // Fetch dynamic stats
   useEffect(() => {
@@ -130,11 +185,20 @@ const About = () => {
   ];
 
   const statsData = [
-    { label: 'Tasks Completed', value: stats.tasksCompleted },
-    { label: 'Active Users', value: stats.activeUsers },
-    { label: 'Projects Managed', value: stats.projectsManaged },
-    { label: 'Time Saved', value: `${stats.timeSaved}hrs` }
+    { label: 'Tasks Completed', value: animatedStats.tasksCompleted },
+    { label: 'Active Users', value: animatedStats.activeUsers },
+    { label: 'Projects Managed', value: animatedStats.projectsManaged },
+    { label: 'Time Saved', value: `${animatedStats.timeSaved}hrs` }
   ];
+
+  const formatTime = (date) => {
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    });
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -147,11 +211,29 @@ const About = () => {
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
           About TaskFlow
         </h1>
-        <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+        <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed mb-8">
           TaskFlow is a modern task management solution designed to help individuals and teams 
           organize, prioritize, and complete their work efficiently. Built with cutting-edge 
           technology and user-centric design principles.
         </p>
+        
+        {/* Live Clock Section */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.3 }}
+          className="inline-block bg-gradient-to-r from-eastern-blue to-kimberly dark:from-saddle dark:to-twine rounded-2xl p-6 shadow-lg"
+        >
+          <div className="flex items-center space-x-4">
+            <Clock className="h-8 w-8 text-white" />
+            <div className="text-white">
+              <div className="text-sm font-medium opacity-90">Current Time</div>
+              <div className="text-2xl md:text-3xl font-bold font-mono">
+                {formatTime(currentTime)}
+              </div>
+            </div>
+          </div>
+        </motion.div>
       </motion.div>
 
       {/* Stats Section */}
@@ -159,10 +241,11 @@ const About = () => {
         {statsData.map((stat, index) => (
           <motion.div 
             key={stat.label} 
-            className="text-center"
+            className="text-center bg-white dark:bg-saddle p-6 rounded-xl border border-chardonnay dark:border-twine hover:shadow-lg transition-all duration-300"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
+            whileHover={{ scale: 1.05, y: -5 }}
           >
             <motion.div 
               className="text-3xl md:text-4xl font-bold text-eastern-blue dark:text-chardonnay mb-2"
@@ -170,11 +253,32 @@ const About = () => {
               animate={{ scale: 1 }}
               transition={{ delay: index * 0.1 + 0.3, type: "spring", stiffness: 200 }}
             >
-              {stat.value}
+              <motion.span
+                key={stat.value}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="inline-block"
+              >
+                {stat.value}
+              </motion.span>
             </motion.div>
             <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">
               {stat.label}
             </div>
+            <motion.div
+              className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1 mt-3"
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ delay: index * 0.1 + 0.5, duration: 1 }}
+            >
+              <motion.div
+                className="bg-eastern-blue dark:bg-chardonnay h-1 rounded-full"
+                initial={{ width: "0%" }}
+                animate={{ width: "100%" }}
+                transition={{ delay: index * 0.1 + 0.7, duration: 1.5 }}
+              />
+            </motion.div>
           </motion.div>
         ))}
       </motion.div>

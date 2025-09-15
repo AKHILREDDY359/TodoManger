@@ -17,19 +17,38 @@ const ForgotPassword = ({ onBack, onSuccess }) => {
     setError('');
     setMessage('');
 
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Please enter a valid email address.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password`,
       });
 
       if (error) {
-        setError(error.message);
+        console.error('Password reset error:', error);
+        // Handle specific error cases
+        if (error.message.includes('rate limit')) {
+          setError('Too many requests. Please wait a moment before trying again.');
+        } else if (error.message.includes('not found')) {
+          setError('No account found with this email address.');
+        } else if (error.message.includes('invalid email')) {
+          setError('Please enter a valid email address.');
+        } else {
+          setError(error.message);
+        }
       } else {
         setMessage('Password reset email sent! Check your inbox.');
         setIsSuccess(true);
         if (onSuccess) onSuccess();
       }
     } catch (err) {
+      console.error('Unexpected error:', err);
       setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
@@ -147,10 +166,17 @@ const ForgotPassword = ({ onBack, onSuccess }) => {
 
         <Button
           type="submit"
-          disabled={loading}
+          disabled={loading || !email.trim()}
           className="w-full bg-green-600 dark:bg-green-500 text-white hover:bg-green-700 dark:hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? 'Sending...' : 'Send Reset Link'}
+          {loading ? (
+            <div className="flex items-center justify-center">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+              Sending...
+            </div>
+          ) : (
+            'Send Reset Link'
+          )}
         </Button>
       </form>
 
@@ -170,3 +196,4 @@ const ForgotPassword = ({ onBack, onSuccess }) => {
 };
 
 export default ForgotPassword;
+
