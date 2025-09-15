@@ -45,7 +45,6 @@ const ForgotPassword = ({ onBack, onSuccess }) => {
       
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password`,
-        emailRedirectTo: `${window.location.origin}/reset-password`,
       });
 
       console.log('Password reset response:', { data, error });
@@ -70,6 +69,8 @@ const ForgotPassword = ({ onBack, onSuccess }) => {
         }
       } else {
         console.log('Password reset email sent successfully');
+        // Show simple browser alert
+        alert('✅ Password reset email sent! Check your inbox and spam folder.');
         setMessage('Password reset email sent! Check your inbox and spam folder.');
         setIsSuccess(true);
         if (onSuccess) onSuccess();
@@ -120,35 +121,6 @@ const ForgotPassword = ({ onBack, onSuccess }) => {
         <p className="text-sm text-gray-500 dark:text-gray-400">
           Didn't receive the email? Check your spam folder or try again.
         </p>
-        <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
-          If you still don't receive the email, please check your Supabase project settings 
-          to ensure email authentication is enabled.
-        </p>
-        <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
-          ⚠️ Supabase has low email limits (3-5 emails/hour). If you've been testing, 
-          you may have hit the rate limit. Wait 1 hour or configure custom SMTP.
-        </p>
-        <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-          <p className="text-sm text-blue-700 dark:text-blue-300 font-medium mb-2">
-            Alternative: Contact Support
-          </p>
-          <p className="text-xs text-blue-600 dark:text-blue-400">
-            If emails aren't working, you can contact support with your email address 
-            to manually reset your password.
-          </p>
-        </div>
-        
-        <div className="mt-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-          <p className="text-sm text-yellow-700 dark:text-yellow-300 font-medium mb-2">
-            Getting 404 Error?
-          </p>
-          <p className="text-xs text-yellow-600 dark:text-yellow-400">
-            If you get a 404 error when clicking the reset link, check your Supabase project settings:
-            <br />• Go to Authentication → URL Configuration
-            <br />• Add your domain to "Site URL" and "Redirect URLs"
-            <br />• Example: https://yourdomain.com
-          </p>
-        </div>
           </div>
         </div>
       </motion.div>
@@ -234,57 +206,6 @@ const ForgotPassword = ({ onBack, onSuccess }) => {
             'Send Reset Link'
           )}
         </Button>
-
-        {/* Debug buttons - remove in production */}
-        <div className="space-y-2 mt-2">
-          <button
-            type="button"
-            onClick={async () => {
-              console.log('Testing Supabase connection...');
-              try {
-                const { data, error } = await supabase.auth.getSession();
-                console.log('Session test:', { data, error });
-                
-                const { data: userData, error: userError } = await supabase.auth.getUser();
-                console.log('User test:', { userData, userError });
-                
-                alert(`Supabase connection test:\nSession: ${error ? 'Error' : 'OK'}\nUser: ${userError ? 'Error' : 'OK'}\nCheck console for details.`);
-              } catch (err) {
-                console.error('Connection test error:', err);
-                alert('Connection test failed. Check console for details.');
-              }
-            }}
-            className="w-full px-4 py-2 text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
-          >
-            Test Supabase Connection
-          </button>
-          
-          <button
-            type="button"
-            onClick={async () => {
-              console.log('Testing password reset with test email...');
-              try {
-                const testEmail = 'test@example.com';
-                const { data, error } = await supabase.auth.resetPasswordForEmail(testEmail, {
-                  redirectTo: `${window.location.origin}/reset-password`,
-                });
-                console.log('Password reset test response:', { data, error });
-                
-                if (error) {
-                  alert(`Password reset test failed:\n${error.message}\n\nThis might indicate rate limiting or configuration issues.`);
-                } else {
-                  alert('Password reset test successful! Check Supabase logs for email delivery status.');
-                }
-              } catch (err) {
-                console.error('Password reset test error:', err);
-                alert('Password reset test failed. Check console for details.');
-              }
-            }}
-            className="w-full px-4 py-2 text-xs bg-blue-200 dark:bg-blue-700 text-blue-700 dark:text-blue-300 rounded hover:bg-blue-300 dark:hover:bg-blue-600"
-          >
-            Test Password Reset (with test email)
-          </button>
-        </div>
       </form>
 
       <div className="mt-6 text-center">
