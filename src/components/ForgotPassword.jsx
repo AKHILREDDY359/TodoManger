@@ -45,6 +45,7 @@ const ForgotPassword = ({ onBack, onSuccess }) => {
       
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password`,
+        emailRedirectTo: `${window.location.origin}/reset-password`,
       });
 
       console.log('Password reset response:', { data, error });
@@ -134,6 +135,18 @@ const ForgotPassword = ({ onBack, onSuccess }) => {
           <p className="text-xs text-blue-600 dark:text-blue-400">
             If emails aren't working, you can contact support with your email address 
             to manually reset your password.
+          </p>
+        </div>
+        
+        <div className="mt-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+          <p className="text-sm text-yellow-700 dark:text-yellow-300 font-medium mb-2">
+            Getting 404 Error?
+          </p>
+          <p className="text-xs text-yellow-600 dark:text-yellow-400">
+            If you get a 404 error when clicking the reset link, check your Supabase project settings:
+            <br />• Go to Authentication → URL Configuration
+            <br />• Add your domain to "Site URL" and "Redirect URLs"
+            <br />• Example: https://yourdomain.com
           </p>
         </div>
           </div>

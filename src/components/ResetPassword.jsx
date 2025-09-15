@@ -20,14 +20,23 @@ const ResetPassword = () => {
     // Handle password reset from email link
     const handlePasswordReset = async () => {
       try {
-        // Get the URL hash parameters
+        console.log('Current URL:', window.location.href);
+        console.log('URL hash:', window.location.hash);
+        console.log('URL search:', window.location.search);
+        
+        // Check both hash and search parameters for tokens
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const accessToken = hashParams.get('access_token');
-        const refreshToken = hashParams.get('refresh_token');
-        const type = hashParams.get('type');
+        const searchParams = new URLSearchParams(window.location.search);
+        
+        const accessToken = hashParams.get('access_token') || searchParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token') || searchParams.get('refresh_token');
+        const type = hashParams.get('type') || searchParams.get('type');
+        
+        console.log('Extracted tokens:', { accessToken: !!accessToken, refreshToken: !!refreshToken, type });
 
         // If we have tokens from the email link, set the session
         if (accessToken && refreshToken && type === 'recovery') {
+          console.log('Setting session with recovery tokens...');
           const { error } = await supabase.auth.setSession({
             access_token: accessToken,
             refresh_token: refreshToken
@@ -37,13 +46,18 @@ const ResetPassword = () => {
             console.error('Error setting session:', error);
             setError('Invalid or expired reset link. Please request a new password reset.');
             setTimeout(() => navigate('/login'), 3000);
+          } else {
+            console.log('Session set successfully');
           }
         } else {
           // Check if user already has a valid session
           const { data: { session } } = await supabase.auth.getSession();
           if (!session) {
-            setError('No valid reset session found. Please request a new password reset.');
-            setTimeout(() => navigate('/login'), 3000);
+            console.log('No session found, redirecting to login');
+            setError('No valid reset session found. This might be due to a 404 error. Please check your Supabase project settings and ensure the redirect URL is correctly configured.');
+            setTimeout(() => navigate('/login'), 5000);
+          } else {
+            console.log('Valid session found');
           }
         }
       } catch (err) {
